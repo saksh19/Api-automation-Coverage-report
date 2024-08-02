@@ -1,4 +1,6 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize, DataTypes, json } from 'sequelize';
+import jwt from 'jsonwebtoken'
+
 
 const sequelize = new Sequelize('Mydatabase', 'root', 'root', {
   host: 'localhost',
@@ -24,7 +26,47 @@ const User = sequelize.define('User', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
+  }, 
+    refreshToken: { // Add this field
+    type: DataTypes.STRING,
+    allowNull: true,
   },
 });
 
-export { sequelize, User };
+const Api = sequelize.define('Api', {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  path: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  method: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  covered: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  Tested_by: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  Test_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  }
+}, {
+  tableName: 'Api',
+  indexes: [
+    {
+      unique: true,
+      fields: ['path', 'method']
+    }
+  ]
+});
+
+export { sequelize, User,Api };

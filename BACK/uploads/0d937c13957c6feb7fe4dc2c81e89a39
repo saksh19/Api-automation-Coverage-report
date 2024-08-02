@@ -1,0 +1,7 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+/api/api/tellerrequest/assignee/get------%${Type},2,714,707,721,7.00,0.000%,.57521,0.86,0.71,1536.0
+/api/api/tellerequest/type/get/action=create------%${Type},2,596,538,654,58.00,0.000%,.60883,0.88,0.76,1481.0
+/api/api/tellerrequest/create,2,670,660,680,10.00,100.000%,.50063,0.30,0.68,605.5
+/api/api/tellerrequest/approve,2,627,586,669,41.50,100.000%,.50942,0.24,0.64,487.0
+/api/api/teller/tellerbalance------%${Type},1,682,682,682,0.00,100.000%,1.46628,0.65,1.80,453.0
+TOTAL,9,655,538,721,54.86,55.556%,1.49950,1.41,1.91,963.6

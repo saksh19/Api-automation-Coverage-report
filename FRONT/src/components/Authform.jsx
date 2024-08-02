@@ -1,73 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import Home from './Home';
-import Account from './Account';
+
+function User(curretUser){
+ let data={
+  name: curretUser.name,
+  email: curretUser.email
+ }
+ return data;
+}
+
 function Authform() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate=useNavigate()
   const [token, setToken] = useState('');
-  const navigate = useNavigate();
   const [verify,setVerify]=useState(false)
+  
+
 
   
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
       const response = await axios.post('http://localhost:5000/login', { email, password });
-      setToken(response.data.token);
+       setToken(response.data.accessToken);
+      handleClick()
+      let CurrentUser=response.data
+      localStorage.setItem('token', token)
+      
+       
       console.log('Login successful', response.data);
+      const curretUser=response.data
+      User(curretUser)
     } catch (error) {
       console.error('Login error:', error);
     }
   };
+  
+
+
 
   const handleClick = () => {
-   token && navigate('/Account')
+   if(token){ 
+    navigate('/Home')
+   }
   };
 
-  const isAuthenticated = async () => {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-      return false;
-    }
-  
-    try {
-      const response = await axios.post('http://localhost:5000/verify-token', { token });
-      return response.data.isValid;
-    } catch (error) {
-      console.error('Token verification failed:', error);
-      return false;
-    }
-  };
-
-  const ProtectedRoute = ({ component: Component, ...rest }) => {
-    const [isAuth, setIsAuth] = React.useState(null);
-  
-    React.useEffect(() => {
-      const checkAuth = async () => {
-        const authenticated = await isAuthenticated();
-        setIsAuth(authenticated);
-      };
-      checkAuth();
-    }, []);
-  
-    if (isAuth === null) {
-      return <div>Loading...</div>;
-    }
-  
-    return (      <Router>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<ProtectedRoute component={Home} />}>
-          <Route path="account" element={<Account />} />
-        </Route>
-      </Routes>
-    </Router>
-    )}
+ 
 
   return (
     <div className='containeracc'>
@@ -114,7 +95,7 @@ function Authform() {
         <div className="text-center">
           <button
             className="w-full px-6 py-3 mt-6 mb-2 font-bold text-white uppercase transition-all bg-gradient-to-tl from-gray-900 to-slate-800 rounded-lg shadow-soft-md hover:from-slate-800 hover:to-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fuchsia-500 disabled:opacity-50"
-            type="button"
+            type="submit"
             // disabled={!agreed}
           >
            Log in
@@ -128,6 +109,9 @@ function Authform() {
   </div>
 </div>
   );
+  
 }
 
-export default Authform
+export default Authform;
+export {User}
+// module.exports=Authform;

@@ -78,7 +78,7 @@ function Registerform() {
         <div className="text-center">
           <button
             className="w-full px-6 py-3 mt-6 mb-2 font-bold text-white uppercase transition-all bg-gradient-to-tl from-gray-900 to-slate-800 rounded-lg shadow-soft-md hover:from-slate-800 hover:to-gray-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-fuchsia-500 disabled:opacity-50"
-            type="button"
+            type="submit"
             // disabled={!agreed}
           >
            Sign Up
