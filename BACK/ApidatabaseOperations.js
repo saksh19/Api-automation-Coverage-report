@@ -48,3 +48,5 @@ async function insertData(data) {
 }
 
 export { insertData }
+
+

@@ -21,8 +21,12 @@ ChartJS.register(
   Legend
 );
 
+const BACKEND_URL = 'http://localhost:5000';
+
+
 function Uploadform() {
-  const { isOpen, handleOpenForm } = useOutletContext();
+  const context = useOutletContext() || {}
+  const { isOpen, handleOpenForm,inviteOpen,handleOpenInvite} = context
   const [file, setFile] = useState(null);
   const [endpoints, setEndpoints] = useState([]);
   const [coverageStats, setCoverageStats] = useState({ covered: 0, notCovered: 0 });
@@ -35,7 +39,10 @@ function Uploadform() {
   const [formError, setFormError] = useState(false);
   const [openIndex, setOpenIndex] = useState(null);
   const [date,setDate]=useState("");
-  const [show,setShow]=useState(false)
+  const [show,setShow]=useState(false);
+  const [email,setEmail] = useState("");
+
+
   const options = {
     plugins: {
       tooltip: {
@@ -47,11 +54,7 @@ function Uploadform() {
     },
   };
 
-  console.log("file data is", file);
-  console.log("name is ", name);
-
-  const BACKEND_URL = 'http://localhost:5000';
-
+ 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!file) {
@@ -70,15 +73,38 @@ function Uploadform() {
         },
       });
       const formattedEndpoints = res.data.map(data => data.Label.split('------')[0]);
-      console.log("response is ", res);
-      console.log("formated end points", formattedEndpoints);
       setEndpoints(formattedEndpoints);
       setResult(res.data);
-      console.log("result is --->", result);
     } catch (err) {
       console.error(err);
     }
   };
+
+  
+  const handleInvite=async ()=>{
+    try {
+      const res=await axios.post(`${BACKEND_URL}/api/invite`,{email})
+      toast.success(res.data,{
+        autoClose: 3000, 
+        hideProgressBar: false, 
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      setEmail("")
+
+    } catch (error) {
+      console.log(`invite error: ${error}`);
+      toast.error("Invalid Email!",{
+        autoClose: 3000, 
+        hideProgressBar: false, 
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        style: { color: "black"},
+      });
+    }
+  }
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -88,16 +114,13 @@ function Uploadform() {
     try {
       const { data } = await axios.get(`${BACKEND_URL}/`);
       let CAMS = data.data;
-      console.log("cams", CAMS.length);
       setShow(true)
       const listData =  await updateCoverageList(CAMS, endpoints);
-      console.log("---------------->", listData);
       const updatedlist= listData.map(list=>({
         ...list,
-        tested_by: name,
+        tested_by: name.toLowerCase(),
         test_name: testcase
       }))
-      console.log("updated list",updatedlist);
       const store= await axios.post(`${BACKEND_URL}/store`,updatedlist);
       console.log("store",store)
     } catch (error) {
@@ -112,10 +135,7 @@ function Uploadform() {
     }));
 
     coverageList.sort((a, b) => b.covered - a.covered); 
-    console.log("my coverage list", coverageList);
     const list = coverageList.filter(api => api.covered);
-    console.log("list at line 109========>", list);
-    // setCoveredApiEndpoints(coverageList.filter(api => api.covered));
     setCoverageList(coverageList);
     const covered = coverageList.filter(api => api.covered).length;
     const notCovered = coverageList.length - covered;
@@ -195,6 +215,26 @@ function Uploadform() {
             </form>
           </div>
         )}
+       {inviteOpen && <>
+       <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50 containerup">
+                <div className="input-container m-auto ">
+        <input required="" placeholder="Email Address" type="email"  value={email}  onChange={(e)=>setEmail(e.target.value)}/>
+        <button className="invite-btn" type="button" onClick={handleInvite} >
+          Invite
+         </button>
+         </div>
+         <div className=''>
+       <button className="btn-close" onClick={handleOpenInvite} >
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                   <path fill="none" d="M0 0h24v24H0V0z"></path>
+                   <path
+                     d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"
+                     fill="var(--c-text-secondary)"
+                   ></path>
+                 </svg>
+               </button>
+               </div>
+          </div></>}
 
         <div className='bg-white-200 flex justify-evenly'>
           <div className='h-[400px] border-white'>
@@ -204,11 +244,12 @@ function Uploadform() {
         </div>
 
         <div className='relative bg-slate-200 p-4 flex justify-around'>
-          <button className='rounded-md px-2 py-2 m-auto bg-blue-600 h-12 text-white mr-14' onClick={swag}>Click to test</button>
+           <h1 className='font-semibold text-xl mt-3 mr-auto'> Total Uploaded Endpoints: {endpoints.length}</h1>
           <h3 className='absolute left-1/2 transform -translate-x-1/2 font-semibold text-xl mt-3'>Uploaded API Endpoints: {file ? file.name : ""}</h3>
           <div className='flex justify-end'>
-            <h1 className='font-semibold text-xl mt-3'> Total Uploaded Endpoints: {endpoints.length}</h1>
+           
           </div>
+          <button className='rounded-md px-2 py-2 m- bg-blue-600 h-12 text-white mr-14' onClick={swag}>Click to test</button>
         </div>
 
         <div className='h-[400px] bg-white-200 overflow-scroll'>
@@ -234,8 +275,6 @@ function Uploadform() {
         <div className='h-[400px] bg-white overflow-scroll m-2'>
           {coverageList.map((api, index) => {
             const matchedResult = result.find(r => r.Label.split('------')[0] === api.path);
-            console.log("matched result", matchedResult);
-
             return (
               <div key={index}>
                 <h2>
@@ -289,3 +328,4 @@ function Uploadform() {
 }
 
 export default Uploadform;
+export {BACKEND_URL}

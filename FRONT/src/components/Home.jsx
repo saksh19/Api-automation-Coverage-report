@@ -24,23 +24,26 @@ const isAuthenticated = async () => {
 
 function Home() {
   const [isOpen, setIsOpen] = useState(false);
+  const [inviteOpen,setInviteOpen] = useState(false);
+ 
+
+ const handleOpenInvite = () => {
+      setInviteOpen(inviteOpen?false:true)
+ }
 
   const handleOpenForm = () => {
-        setIsOpen(isOpen?false:true);
-        console.log("worked");
-      };
-
-      console.log("is open",isOpen);
+    setIsOpen(!isOpen);
+  };
 
   return (
-   <>
-
-      <Navbar handleOpenForm={handleOpenForm}/>
+    <>
+      <Navbar handleOpenForm={handleOpenForm} handleOpenInvite={handleOpenInvite}/>
       <div>
-      <Outlet context={{isOpen,handleOpenForm}}/>
+        <Outlet context={{ isOpen, handleOpenForm, inviteOpen,handleOpenInvite }} />
       </div>
-     </>
-  )
+    </>
+  );
 }
 
-export default Home
+export default Home;
+

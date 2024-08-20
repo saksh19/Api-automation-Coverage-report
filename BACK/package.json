@@ -23,10 +23,12 @@
     "express": "^4.19.2",
     "fs": "^0.0.1-security",
     "gitignore": "^0.7.0",
+    "json2csv": "^6.0.0-alpha.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "mysql": "^2.18.1",
     "mysql2": "^3.10.3",
+    "nodemailer": "^6.9.14",
     "sequelize": "^6.37.3",
     "tedious": "^18.3.0"
   }
