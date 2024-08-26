@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment/moment';
 import { useNavigate } from 'react-router-dom';
-import { BACKEND_URL } from './Upltest2';
+import { BACKEND_URL } from './Uplform';
 import { toast,ToastContainer } from 'react-toastify';
 
 function Account() {

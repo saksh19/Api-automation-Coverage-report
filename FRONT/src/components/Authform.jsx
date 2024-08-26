@@ -80,7 +80,7 @@ function Authform() {
               </button>
             </div>
             <p className="mt-4 mb-0 text-sm text-center text-gray-700">
-              Don't have an account? <a href="/signup" className="font-bold text-fuchsia-600">Sign up</a>
+              Don't have an account? <Link to="/register" className="font-bold text-fuchsia-600">Sign up</Link>
             </p>
           </form>
         </div>
