@@ -1,0 +1,7 @@
+jsonwebtoken
+  bcrypt
+  cookieparser
+  nodemailer
+  privatekey (in env file)
+  
+  
